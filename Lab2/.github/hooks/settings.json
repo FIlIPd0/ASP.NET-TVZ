@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "bash -c \"cat >> '/home/filip/Coding/C#/Github_repo/Lab2/agent_log.txt'\""
+      }
+    ],
+    "preToolUse": [
+      {
+        "type": "command",
+        "command": "bash -c \"cat >> '/home/filip/Coding/C#/Github_repo/Lab2/agent_log.txt'\""
+      }
+    ]
+  }
+}
