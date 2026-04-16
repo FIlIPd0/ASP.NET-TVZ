@@ -1,0 +1,62 @@
+@model Playlist
+@{
+    ViewData["Title"] = "Playlist Details";
+}
+
+<section class="ux-page">
+    <div class="ux-detail-hero">
+        <h2>@Model.Name</h2>
+        <p>@Model.Description</p>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Metadata</h3>
+        <div class="ux-meta-grid">
+            <div class="ux-meta-item"><div class="ux-meta-label">ID</div><div class="ux-meta-value">@Model.Id</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Owner</div><div class="ux-meta-value"><a asp-controller="AppUsers" asp-action="Details" asp-route-id="@Model.Owner.Id">@Model.Owner.Username</a></div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Created</div><div class="ux-meta-value">@Model.CreatedAt.ToString("dd.MM.yyyy")</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Visibility</div><div class="ux-meta-value">@(Model.IsPublic ? "Public" : "Private")</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Items</div><div class="ux-meta-value">@Model.MediaFiles.Count</div></div>
+        </div>
+    </section>
+
+    <section class="ux-card-slab">
+        <h3>Playlist Items</h3>
+        @if (Model.MediaFiles.Count == 0)
+        {
+            <div class="ux-empty">Playlist je prazna.</div>
+        }
+        else
+        {
+            <div class="ux-ledger-wrap">
+                <table class="ux-ledger-table">
+                    <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Owner</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var media in Model.MediaFiles)
+                    {
+                        <tr>
+                            <td>@media.FileName</td>
+                            <td>@media.MediaType</td>
+                            <td>@media.SizeInMb.ToString("0.#") MB</td>
+                            <td><a asp-controller="AppUsers" asp-action="Details" asp-route-id="@media.Owner.Id">@media.Owner.Username</a></td>
+                            <td><a asp-controller="LocalMediaFiles" asp-action="Details" asp-route-id="@media.Id">Details</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <div class="ux-link-cluster">
+        <a class="ux-link-button" asp-action="Index">Back to playlists</a>
+    </div>
+</section>

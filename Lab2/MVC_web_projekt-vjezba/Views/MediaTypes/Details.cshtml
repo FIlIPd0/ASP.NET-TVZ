@@ -1,0 +1,51 @@
+@model MediaTypeDetailsViewModel
+@{
+    ViewData["Title"] = "Media Type Details";
+}
+
+<section class="ux-page">
+    <div class="ux-detail-hero">
+        <h2>@Model.MediaType</h2>
+        <p>Filtered list of files by selected media category.</p>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Files in this lane (@Model.Files.Count)</h3>
+        @if (Model.Files.Count == 0)
+        {
+            <div class="ux-empty">No files in this category.</div>
+        }
+        else
+        {
+            <div class="ux-ledger-wrap">
+                <table class="ux-ledger-table">
+                    <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Owner</th>
+                        <th>Storage</th>
+                        <th>Added</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var file in Model.Files)
+                    {
+                        <tr>
+                            <td>@file.FileName</td>
+                            <td><a asp-controller="AppUsers" asp-action="Details" asp-route-id="@file.Owner.Id">@file.Owner.Username</a></td>
+                            <td><a asp-controller="StorageDevices" asp-action="Details" asp-route-id="@file.StorageDevice.Id">@file.StorageDevice.Name</a></td>
+                            <td>@file.AddedAt.ToString("dd.MM.yyyy")</td>
+                            <td><a asp-controller="LocalMediaFiles" asp-action="Details" asp-route-id="@file.Id">Details</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <div class="ux-link-cluster">
+        <a class="ux-link-button" asp-action="Index">Back to media types</a>
+    </div>
+</section>

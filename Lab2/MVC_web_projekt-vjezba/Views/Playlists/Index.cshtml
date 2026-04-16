@@ -1,0 +1,30 @@
+@model IEnumerable<Playlist>
+@{
+    ViewData["Title"] = "Playlists";
+    var playlists = Model.ToList();
+}
+
+<section class="ux-page">
+    <div class="ux-page-header">
+        <h2>Playlists</h2>
+        <p>Pregled svih lista i njihovih vlasnika.</p>
+    </div>
+
+    <div class="ux-card-grid">
+        @foreach (var playlist in playlists)
+        {
+            <article class="ux-card-slab">
+                <h3>@playlist.Name</h3>
+                <p>@playlist.Description</p>
+                <div class="ux-chip-row">
+                    <span class="ux-chip @(playlist.IsPublic ? "status-ok" : "status-warn")">@(playlist.IsPublic ? "public" : "private")</span>
+                    <span class="ux-chip">items: @playlist.MediaFiles.Count</span>
+                </div>
+                <div class="ux-muted">Owner: <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@playlist.Owner.Id">@playlist.Owner.Username</a></div>
+                <div class="ux-link-cluster">
+                    <a class="ux-link-button" asp-action="Details" asp-route-id="@playlist.Id">Details</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>

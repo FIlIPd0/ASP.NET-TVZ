@@ -1,0 +1,72 @@
+@model IEnumerable<LocalMediaFile>
+@{
+    ViewData["Title"] = "Media Files";
+    var files = Model.ToList();
+}
+
+<section class="ux-page">
+    <div class="ux-page-header">
+        <h2>Local Media Files</h2>
+        <p>Glavna lista datoteka s pristupom detaljima.</p>
+    </div>
+
+    <div class="ux-stat-strip">
+        <article class="ux-stat-card">
+            <span class="ux-stat-label">Files</span>
+            <span class="ux-stat-value">@files.Count</span>
+        </article>
+        <article class="ux-stat-card">
+            <span class="ux-stat-label">Favorites</span>
+            <span class="ux-stat-value">@files.Count(file => file.IsFavorite)</span>
+        </article>
+        <article class="ux-stat-card">
+            <span class="ux-stat-label">Total Size MB</span>
+            <span class="ux-stat-value">@files.Sum(file => file.SizeInMb).ToString("0")</span>
+        </article>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>File Ledger</h3>
+        <div class="ux-ledger-wrap">
+            <table class="ux-ledger-table">
+                <thead>
+                <tr>
+                    <th>File Name</th>
+                    <th>Type</th>
+                    <th>Owner</th>
+                    <th>Size</th>
+                    <th>Storage</th>
+                    <th>Added</th>
+                    <th>Favorite</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var file in files)
+                {
+                    <tr>
+                        <td>@file.FileName</td>
+                        <td>
+                            <a asp-controller="MediaTypes" asp-action="Details" asp-route-id="@file.MediaType">@file.MediaType</a>
+                        </td>
+                        <td>
+                            <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@file.Owner.Id">@file.Owner.Username</a>
+                        </td>
+                        <td>@file.SizeInMb.ToString("0.#") MB</td>
+                        <td>
+                            <a asp-controller="StorageDevices" asp-action="Details" asp-route-id="@file.StorageDevice.Id">@file.StorageDevice.Name</a>
+                        </td>
+                        <td>@file.AddedAt.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            <span class="ux-chip @(file.IsFavorite ? "status-ok" : "")">@(file.IsFavorite ? "yes" : "no")</span>
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@file.Id">Details</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</section>

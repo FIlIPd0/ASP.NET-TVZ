@@ -1,0 +1,24 @@
+@model IEnumerable<MediaType>
+@{
+    ViewData["Title"] = "Media Types";
+    var mediaTypes = Model.ToList();
+}
+
+<section class="ux-page">
+    <div class="ux-page-header">
+        <h2>Media Types</h2>
+        <p>Kategorije medija i ulaz u filtrirane prikaze datoteka.</p>
+    </div>
+
+    <div class="ux-card-grid">
+        @foreach (var mediaType in mediaTypes)
+        {
+            <article class="ux-card-slab">
+                <h3>@mediaType</h3>
+                <div class="ux-link-cluster">
+                    <a class="ux-link-button" asp-action="Details" asp-route-id="@mediaType">View files</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>

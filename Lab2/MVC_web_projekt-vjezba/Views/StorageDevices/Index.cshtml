@@ -1,0 +1,37 @@
+@model IEnumerable<StorageDevice>
+@{
+    ViewData["Title"] = "Storage Devices";
+    var devices = Model.ToList();
+}
+
+<section class="ux-page">
+    <div class="ux-page-header">
+        <h2>Storage Devices</h2>
+        <p>Kapacitet i opterecenje uredaja na kojima se cuvaju datoteke.</p>
+    </div>
+
+    <div class="ux-card-grid">
+        @foreach (var device in devices)
+        {
+            var usedPercent = device.CapacityInGb == 0
+                ? 0
+                : Math.Round((device.CapacityInGb - device.FreeSpaceInGb) / device.CapacityInGb * 100, 1);
+
+            <article class="ux-card-slab">
+                <h3>@device.Name</h3>
+                <div class="ux-chip-row">
+                    <span class="ux-chip @(device.IsExternal ? "status-warn" : "status-ok")">@(device.IsExternal ? "external" : "internal")</span>
+                    <span class="ux-chip">files: @device.MediaFiles.Count</span>
+                </div>
+                <div class="ux-muted">Path: @device.DevicePath</div>
+                <div class="ux-muted">Used: @usedPercent%</div>
+                <div class="ux-bar">
+                    <div class="ux-bar-fill" style="width:@usedPercent%;"></div>
+                </div>
+                <div class="ux-link-cluster">
+                    <a class="ux-link-button" asp-action="Details" asp-route-id="@device.Id">Details</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>

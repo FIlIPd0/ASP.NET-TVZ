@@ -1,0 +1,54 @@
+@model IEnumerable<MediaComment>
+@{
+    ViewData["Title"] = "Comments";
+    var comments = Model.ToList();
+}
+
+<section class="ux-page">
+    <div class="ux-page-header">
+        <h2>Media Comments</h2>
+        <p>Kronoloski pregled komentara na datoteke.</p>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Comment Timeline</h3>
+        @if (comments.Count == 0)
+        {
+            <div class="ux-empty">Nema komentara.</div>
+        }
+        else
+        {
+            <div class="ux-ledger-wrap">
+                <table class="ux-ledger-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Text</th>
+                        <th>Author</th>
+                        <th>Created</th>
+                        <th>Edited</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var comment in comments)
+                    {
+                        var textPreview = comment.Text.Length > 70
+                            ? $"{comment.Text[..70]}..."
+                            : comment.Text;
+
+                        <tr>
+                            <td>@comment.Id</td>
+                            <td>@textPreview</td>
+                            <td><a asp-controller="AppUsers" asp-action="Details" asp-route-id="@comment.Author.Id">@comment.Author.Username</a></td>
+                            <td>@comment.CreatedAt.ToString("dd.MM.yyyy")</td>
+                            <td>@(comment.IsEdited ? "Yes" : "No")</td>
+                            <td><a asp-action="Details" asp-route-id="@comment.Id">Details</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+</section>

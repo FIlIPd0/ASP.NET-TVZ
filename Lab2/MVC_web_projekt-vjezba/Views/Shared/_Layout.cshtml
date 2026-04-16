@@ -1,0 +1,89 @@
+﻿@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    string IsActive(string controller, string action = "Index") =>
+        currentController.Equals(controller, StringComparison.OrdinalIgnoreCase) &&
+        currentAction.Equals(action, StringComparison.OrdinalIgnoreCase)
+            ? "is-active"
+            : string.Empty;
+
+    var breadcrumbs = ViewData["Breadcrumbs"] as List<BreadcrumbItem>;
+}
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - Atlas Deck</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/MVC_web_projekt_vjezba.styles.css" asp-append-version="true"/>
+</head>
+<body>
+<div class="ux-shell">
+    <aside class="ux-rail">
+        <a class="ux-brand" asp-controller="Home" asp-action="Index">Atlas Deck</a>
+        <p class="ux-brand-sub">Local Media Command Panel</p>
+        <nav class="ux-nav">
+            <a class="@IsActive("Home")" asp-controller="Home" asp-action="Index">Home</a>
+            <a class="@IsActive("LocalMediaLibraries")" asp-controller="LocalMediaLibraries" asp-action="Index">Libraries</a>
+            <a class="@IsActive("AppUsers")" asp-controller="AppUsers" asp-action="Index">Users</a>
+            <a class="@IsActive("LocalMediaFiles")" asp-controller="LocalMediaFiles" asp-action="Index">Media Files</a>
+            <a class="@IsActive("Playlists")" asp-controller="Playlists" asp-action="Index">Playlists</a>
+            <a class="@IsActive("Tags")" asp-controller="Tags" asp-action="Index">Tags</a>
+            <a class="@IsActive("StorageDevices")" asp-controller="StorageDevices" asp-action="Index">Storage Devices</a>
+            <a class="@IsActive("MediaComments")" asp-controller="MediaComments" asp-action="Index">Comments</a>
+            <a class="@IsActive("MediaTypes")" asp-controller="MediaTypes" asp-action="Index">Media Types</a>
+            <a class="@IsActive("Home", "Privacy")" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </nav>
+    </aside>
+
+    <div class="ux-main">
+        <header class="ux-topbar">
+            <div>
+                <h1 class="ux-top-title">@ViewData["Title"]</h1>
+                @if (breadcrumbs is { Count: > 0 })
+                {
+                    <nav class="ux-crumbs" aria-label="breadcrumb">
+                        @for (var i = 0; i < breadcrumbs.Count; i++)
+                        {
+                            var crumb = breadcrumbs[i];
+                            var isLast = i == breadcrumbs.Count - 1;
+
+                            if (!isLast && !string.IsNullOrWhiteSpace(crumb.Url))
+                            {
+                                <a href="@crumb.Url">@crumb.Label</a>
+                            }
+                            else
+                            {
+                                <span class="current">@crumb.Label</span>
+                            }
+
+                            if (!isLast)
+                            {
+                                <span class="sep">/</span>
+                            }
+                        }
+                    </nav>
+                }
+            </div>
+            <div class="ux-pill is-readonly">Read-only mode</div>
+        </header>
+
+        <main class="ux-view" role="main">
+            @RenderBody()
+        </main>
+
+        <footer class="ux-footer">
+            <span>&copy; 2026 Atlas Deck</span>
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </footer>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

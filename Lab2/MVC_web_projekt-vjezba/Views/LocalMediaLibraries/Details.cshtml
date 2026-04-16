@@ -1,0 +1,79 @@
+@model LocalMediaLibrary
+@{
+    ViewData["Title"] = "Library Details";
+}
+
+<section class="ux-page">
+    <div class="ux-detail-hero">
+        <h2>@Model.Name</h2>
+        <p>Library footprint and connected entities.</p>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Library Metadata</h3>
+        <div class="ux-meta-grid">
+            <div class="ux-meta-item"><div class="ux-meta-label">ID</div><div class="ux-meta-value">@Model.Id</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Created</div><div class="ux-meta-value">@Model.CreatedAt.ToString("dd.MM.yyyy")</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Users</div><div class="ux-meta-value">@Model.Users.Count</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Playlists</div><div class="ux-meta-value">@Model.Playlists.Count</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Devices</div><div class="ux-meta-value">@Model.StorageDevices.Count</div></div>
+        </div>
+    </section>
+
+    <div class="ux-three-col ux-two-col">
+        <section class="ux-card-slab">
+            <h3>Users</h3>
+            @if (Model.Users.Count == 0)
+            {
+                <div class="ux-empty">No linked users.</div>
+            }
+            else
+            {
+                <ul class="ux-list-clean">
+                    @foreach (var user in Model.Users)
+                    {
+                        <li><a asp-controller="AppUsers" asp-action="Details" asp-route-id="@user.Id">@user.Username</a></li>
+                    }
+                </ul>
+            }
+        </section>
+
+        <section class="ux-card-slab">
+            <h3>Playlists</h3>
+            @if (Model.Playlists.Count == 0)
+            {
+                <div class="ux-empty">No linked playlists.</div>
+            }
+            else
+            {
+                <ul class="ux-list-clean">
+                    @foreach (var playlist in Model.Playlists)
+                    {
+                        <li><a asp-controller="Playlists" asp-action="Details" asp-route-id="@playlist.Id">@playlist.Name</a></li>
+                    }
+                </ul>
+            }
+        </section>
+
+        <section class="ux-card-slab">
+            <h3>Storage Devices</h3>
+            @if (Model.StorageDevices.Count == 0)
+            {
+                <div class="ux-empty">No linked devices.</div>
+            }
+            else
+            {
+                <ul class="ux-list-clean">
+                    @foreach (var device in Model.StorageDevices)
+                    {
+                        <li><a asp-controller="StorageDevices" asp-action="Details" asp-route-id="@device.Id">@device.Name</a></li>
+                    }
+                </ul>
+            }
+        </section>
+    </div>
+
+    <div class="ux-link-cluster">
+        <a class="ux-link-button" asp-action="Index">Back to libraries</a>
+    </div>
+</section>
