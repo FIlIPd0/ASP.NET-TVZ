@@ -1,0 +1,38 @@
+@model IEnumerable<LocalMediaLibrary>
+@{
+    ViewData["Title"] = "Libraries";
+    var libraries = Model.ToList();
+}
+
+<section class="ux-page">
+    <div class="ux-page-header">
+        <h2>Local Media Libraries</h2>
+        <p>Pregled biblioteka i njihovog obuhvata.</p>
+    </div>
+
+    <div class="ux-card-grid">
+        @foreach (var library in libraries)
+        {
+            <article class="ux-card-slab">
+                <h3>@library.Name</h3>
+                <div class="ux-meta-grid">
+                    <div class="ux-meta-item">
+                        <div class="ux-meta-label">Users</div>
+                        <div class="ux-meta-value">@library.Users.Count</div>
+                    </div>
+                    <div class="ux-meta-item">
+                        <div class="ux-meta-label">Playlists</div>
+                        <div class="ux-meta-value">@library.Playlists.Count</div>
+                    </div>
+                    <div class="ux-meta-item">
+                        <div class="ux-meta-label">Devices</div>
+                        <div class="ux-meta-value">@library.StorageDevices.Count</div>
+                    </div>
+                </div>
+                <div class="ux-link-cluster">
+                    <a class="ux-link-button" asp-action="Details" asp-route-id="@library.Id">Details</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>

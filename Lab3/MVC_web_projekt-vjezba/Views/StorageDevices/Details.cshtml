@@ -1,0 +1,68 @@
+@model StorageDevice
+@{
+    ViewData["Title"] = "Storage Device Details";
+    var usedPercent = Model.CapacityInGb == 0
+        ? 0
+        : Math.Round((Model.CapacityInGb - Model.FreeSpaceInGb) / Model.CapacityInGb * 100, 1);
+}
+
+<section class="ux-page">
+    <div class="ux-detail-hero">
+        <h2>@Model.Name</h2>
+        <p>@Model.DevicePath</p>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Capacity</h3>
+        <div class="ux-meta-grid">
+            <div class="ux-meta-item"><div class="ux-meta-label">ID</div><div class="ux-meta-value">@Model.Id</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Capacity</div><div class="ux-meta-value">@Model.CapacityInGb GB</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Free Space</div><div class="ux-meta-value">@Model.FreeSpaceInGb GB</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Type</div><div class="ux-meta-value">@(Model.IsExternal ? "External" : "Internal")</div></div>
+        </div>
+        <div class="ux-muted">Used: @usedPercent%</div>
+        <div class="ux-bar">
+            <div class="ux-bar-fill" style="width:@usedPercent%;"></div>
+        </div>
+    </section>
+
+    <section class="ux-card-slab">
+        <h3>Stored Files</h3>
+        @if (Model.MediaFiles.Count == 0)
+        {
+            <div class="ux-empty">Nema zapisa na uredaju.</div>
+        }
+        else
+        {
+            <div class="ux-ledger-wrap">
+                <table class="ux-ledger-table">
+                    <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Type</th>
+                        <th>Owner</th>
+                        <th>Added</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var media in Model.MediaFiles.OrderByDescending(media => media.AddedAt))
+                    {
+                        <tr>
+                            <td>@media.FileName</td>
+                            <td>@media.MediaType</td>
+                            <td><a asp-controller="AppUsers" asp-action="Details" asp-route-id="@media.Owner.Id">@media.Owner.Username</a></td>
+                            <td>@media.AddedAt.ToString("dd.MM.yyyy")</td>
+                            <td><a asp-controller="LocalMediaFiles" asp-action="Details" asp-route-id="@media.Id">Details</a></td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+
+    <div class="ux-link-cluster">
+        <a class="ux-link-button" asp-action="Index">Back to storage devices</a>
+    </div>
+</section>

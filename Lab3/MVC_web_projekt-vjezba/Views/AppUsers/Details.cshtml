@@ -1,0 +1,83 @@
+@model AppUser
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<section class="ux-page">
+    <div class="ux-detail-hero">
+        <h2>@Model.Username</h2>
+        <p>Profil korisnika s vezama na njegove datoteke i playliste.</p>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Metadata</h3>
+        <div class="ux-meta-grid">
+            <div class="ux-meta-item">
+                <div class="ux-meta-label">User ID</div>
+                <div class="ux-meta-value">@Model.Id</div>
+            </div>
+            <div class="ux-meta-item">
+                <div class="ux-meta-label">Email</div>
+                <div class="ux-meta-value">@Model.Email</div>
+            </div>
+            <div class="ux-meta-item">
+                <div class="ux-meta-label">City</div>
+                <div class="ux-meta-value">@Model.City</div>
+            </div>
+            <div class="ux-meta-item">
+                <div class="ux-meta-label">Registered</div>
+                <div class="ux-meta-value">@Model.RegisteredAt.ToString("dd.MM.yyyy")</div>
+            </div>
+            <div class="ux-meta-item">
+                <div class="ux-meta-label">Tier</div>
+                <div class="ux-meta-value">@(Model.IsPremium ? "Premium" : "Standard")</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="ux-two-col">
+        <section class="ux-card-slab">
+            <h3>Uploaded Files</h3>
+            @if (Model.UploadedFiles.Count == 0)
+            {
+                <div class="ux-empty">Nema povezanih datoteka.</div>
+            }
+            else
+            {
+                <ul class="ux-list-clean">
+                    @foreach (var file in Model.UploadedFiles.OrderByDescending(file => file.AddedAt))
+                    {
+                        <li>
+                            <a asp-controller="LocalMediaFiles" asp-action="Details" asp-route-id="@file.Id">@file.FileName</a>
+                            <div class="ux-muted">@file.MediaType • @file.SizeInMb.ToString("0.#") MB</div>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+
+        <section class="ux-card-slab">
+            <h3>Playlists</h3>
+            @if (Model.Playlists.Count == 0)
+            {
+                <div class="ux-empty">Nema povezanih playlista.</div>
+            }
+            else
+            {
+                <ul class="ux-list-clean">
+                    @foreach (var playlist in Model.Playlists.OrderByDescending(playlist => playlist.CreatedAt))
+                    {
+                        <li>
+                            <a asp-controller="Playlists" asp-action="Details" asp-route-id="@playlist.Id">@playlist.Name</a>
+                            <div class="ux-muted">Items: @playlist.MediaFiles.Count • @(playlist.IsPublic ? "Public" : "Private")</div>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+    </div>
+
+    <div class="ux-link-cluster">
+        <a class="ux-link-button" asp-action="Index">Back to users</a>
+    </div>
+</section>

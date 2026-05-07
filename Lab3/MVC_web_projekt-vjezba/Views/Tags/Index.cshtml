@@ -1,0 +1,28 @@
+@model IEnumerable<Tag>
+@{
+    ViewData["Title"] = "Tags";
+    var tags = Model.ToList();
+}
+
+<section class="ux-page">
+    <div class="ux-page-header">
+        <h2>Tags</h2>
+        <p>Frekvencijski pregled oznaka i povezanih datoteka.</p>
+    </div>
+
+    <div class="ux-card-grid">
+        @foreach (var tag in tags)
+        {
+            <article class="ux-card-slab">
+                <h3>@tag.Name</h3>
+                <div class="ux-chip-row">
+                    <span class="ux-chip ux-chip-tag" style="background-color:@tag.ColorHex;">@tag.ColorHex</span>
+                    <span class="ux-chip">files: @tag.MediaFiles.Count</span>
+                </div>
+                <div class="ux-link-cluster">
+                    <a class="ux-link-button" asp-action="Details" asp-route-id="@tag.Id">Details</a>
+                </div>
+            </article>
+        }
+    </div>
+</section>

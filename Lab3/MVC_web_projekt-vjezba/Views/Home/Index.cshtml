@@ -1,0 +1,108 @@
+﻿@model HomeDashboardViewModel
+@{
+    ViewData["Title"] = "Library Pulse Deck";
+}
+
+<section class="ux-page">
+    <div class="ux-page-header">
+        <h2>Library Pulse Deck</h2>
+        <p>Centralni pregled stanja medijske arhive, bez write operacija.</p>
+    </div>
+
+    <div class="ux-stat-strip">
+        <article class="ux-stat-card">
+            <span class="ux-stat-label">Users</span>
+            <span class="ux-stat-value">@Model.TotalUsers</span>
+            <a asp-controller="AppUsers" asp-action="Index">Open users</a>
+        </article>
+        <article class="ux-stat-card">
+            <span class="ux-stat-label">Media Files</span>
+            <span class="ux-stat-value">@Model.TotalMediaFiles</span>
+            <a asp-controller="LocalMediaFiles" asp-action="Index">Open files</a>
+        </article>
+        <article class="ux-stat-card">
+            <span class="ux-stat-label">Playlists</span>
+            <span class="ux-stat-value">@Model.TotalPlaylists</span>
+            <a asp-controller="Playlists" asp-action="Index">Open playlists</a>
+        </article>
+        <article class="ux-stat-card">
+            <span class="ux-stat-label">Libraries</span>
+            <span class="ux-stat-value">@Model.TotalLibraries</span>
+            <a asp-controller="LocalMediaLibraries" asp-action="Index">Open libraries</a>
+        </article>
+        <article class="ux-stat-card">
+            <span class="ux-stat-label">Comments</span>
+            <span class="ux-stat-value">@Model.TotalComments</span>
+            <a asp-controller="MediaComments" asp-action="Index">Open comments</a>
+        </article>
+    </div>
+
+    <div class="ux-two-col">
+        <section class="ux-card-slab">
+            <h3>Category Lanes</h3>
+            <div class="ux-mini-grid">
+                @foreach (var snapshot in Model.TypeSnapshots)
+                {
+                    <article class="ux-meta-item">
+                        <div class="ux-meta-label">@snapshot.Label</div>
+                        <div class="ux-meta-value">@snapshot.Count files</div>
+                        <a asp-controller="MediaTypes" asp-action="Details" asp-route-id="@snapshot.Label">View lane</a>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <section class="ux-card-slab">
+            <h3>Storage Pressure</h3>
+            <ul class="ux-list-clean">
+                @foreach (var device in Model.DeviceSnapshots)
+                {
+                    <li>
+                        <div class="ux-link-cluster">
+                            <a asp-controller="StorageDevices" asp-action="Details" asp-route-id="@device.DeviceId">@device.Name</a>
+                            <span class="ux-chip @(device.IsExternal ? "status-warn" : "status-ok")">@(device.IsExternal ? "external" : "internal")</span>
+                        </div>
+                        <div class="ux-muted">@device.UsedPercent% used</div>
+                        <div class="ux-bar">
+                            <div class="ux-bar-fill" style="width:@device.UsedPercent%;"></div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </section>
+    </div>
+
+    <div class="ux-two-col">
+        <section class="ux-card-slab">
+            <h3>Tag Heatstrip</h3>
+            <div class="ux-chip-row">
+                @foreach (var tag in Model.TopTags)
+                {
+                    <a class="ux-chip ux-chip-tag" style="background-color:@tag.ColorHex;" asp-controller="Tags" asp-action="Details" asp-route-id="@tag.TagId">
+                        @tag.Name (@tag.Count)
+                    </a>
+                }
+            </div>
+        </section>
+
+        <section class="ux-card-slab">
+            <h3>Recent Activity</h3>
+            @if (Model.RecentMedia.Count == 0)
+            {
+                <div class="ux-empty">Nema nedavno dodanih zapisa.</div>
+            }
+            else
+            {
+                <ul class="ux-timeline">
+                    @foreach (var item in Model.RecentMedia)
+                    {
+                        <li>
+                            <a asp-controller="LocalMediaFiles" asp-action="Details" asp-route-id="@item.MediaFileId">@item.FileName</a>
+                            <div class="meta">@item.TypeLabel • @item.OwnerName • @item.AddedAt.ToString("dd.MM.yyyy")</div>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+    </div>
+</section>

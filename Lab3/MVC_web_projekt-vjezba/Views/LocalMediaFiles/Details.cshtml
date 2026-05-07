@@ -1,0 +1,95 @@
+@model LocalMediaFile
+@{
+    ViewData["Title"] = "Media File Details";
+}
+
+<section class="ux-page">
+    <div class="ux-detail-hero">
+        <h2>@Model.FileName</h2>
+        <p>@Model.FilePath</p>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Metadata</h3>
+        <div class="ux-meta-grid">
+            <div class="ux-meta-item"><div class="ux-meta-label">ID</div><div class="ux-meta-value">@Model.Id</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Media Type</div><div class="ux-meta-value">@Model.MediaType</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Size</div><div class="ux-meta-value">@Model.SizeInMb.ToString("0.#") MB</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Duration</div><div class="ux-meta-value">@Model.Duration</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Created</div><div class="ux-meta-value">@Model.CreatedAt.ToString("dd.MM.yyyy")</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Added</div><div class="ux-meta-value">@Model.AddedAt.ToString("dd.MM.yyyy")</div></div>
+            <div class="ux-meta-item">
+                <div class="ux-meta-label">Owner</div>
+                <div class="ux-meta-value"><a asp-controller="AppUsers" asp-action="Details" asp-route-id="@Model.Owner.Id">@Model.Owner.Username</a></div>
+            </div>
+            <div class="ux-meta-item">
+                <div class="ux-meta-label">Storage</div>
+                <div class="ux-meta-value"><a asp-controller="StorageDevices" asp-action="Details" asp-route-id="@Model.StorageDevice.Id">@Model.StorageDevice.Name</a></div>
+            </div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Favorite</div><div class="ux-meta-value">@(Model.IsFavorite ? "Yes" : "No")</div></div>
+        </div>
+    </section>
+
+    <div class="ux-two-col">
+        <section class="ux-card-slab">
+            <h3>Tags</h3>
+            @if (Model.Tags.Count == 0)
+            {
+                <div class="ux-empty">Nema tagova.</div>
+            }
+            else
+            {
+                <div class="ux-chip-row">
+                    @foreach (var tag in Model.Tags)
+                    {
+                        <a class="ux-chip ux-chip-tag" style="background-color:@tag.ColorHex;" asp-controller="Tags" asp-action="Details" asp-route-id="@tag.Id">@tag.Name</a>
+                    }
+                </div>
+            }
+        </section>
+
+        <section class="ux-card-slab">
+            <h3>Playlists</h3>
+            @if (Model.Playlists.Count == 0)
+            {
+                <div class="ux-empty">Datoteka nije u playlistama.</div>
+            }
+            else
+            {
+                <ul class="ux-list-clean">
+                    @foreach (var playlist in Model.Playlists)
+                    {
+                        <li>
+                            <a asp-controller="Playlists" asp-action="Details" asp-route-id="@playlist.Id">@playlist.Name</a>
+                            <div class="ux-muted">@playlist.Description</div>
+                        </li>
+                    }
+                </ul>
+            }
+        </section>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Comments</h3>
+        @if (Model.Comments.Count == 0)
+        {
+            <div class="ux-empty">Nema komentara.</div>
+        }
+        else
+        {
+            <ul class="ux-timeline">
+                @foreach (var comment in Model.Comments.OrderByDescending(comment => comment.CreatedAt))
+                {
+                    <li>
+                        <a asp-controller="MediaComments" asp-action="Details" asp-route-id="@comment.Id">@comment.Text</a>
+                        <div class="meta">@comment.Author.Username • @comment.CreatedAt.ToString("dd.MM.yyyy") • @(comment.IsEdited ? "edited" : "original")</div>
+                    </li>
+                }
+            </ul>
+        }
+    </section>
+
+    <div class="ux-link-cluster">
+        <a class="ux-link-button" asp-action="Index">Back to media files</a>
+    </div>
+</section>

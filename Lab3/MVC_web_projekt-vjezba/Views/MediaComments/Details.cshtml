@@ -1,0 +1,40 @@
+@model MediaCommentDetailsViewModel
+@{
+    ViewData["Title"] = "Comment Details";
+}
+
+<section class="ux-page">
+    <div class="ux-detail-hero">
+        <h2>Comment #@Model.Comment.Id</h2>
+        <p>@Model.Comment.Text</p>
+    </div>
+
+    <section class="ux-card-slab">
+        <h3>Metadata</h3>
+        <div class="ux-meta-grid">
+            <div class="ux-meta-item"><div class="ux-meta-label">Author</div><div class="ux-meta-value"><a asp-controller="AppUsers" asp-action="Details" asp-route-id="@Model.Comment.Author.Id">@Model.Comment.Author.Username</a></div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Created</div><div class="ux-meta-value">@Model.Comment.CreatedAt.ToString("dd.MM.yyyy")</div></div>
+            <div class="ux-meta-item"><div class="ux-meta-label">Edited</div><div class="ux-meta-value">@(Model.Comment.IsEdited ? "Yes" : "No")</div></div>
+        </div>
+    </section>
+
+    <section class="ux-card-slab">
+        <h3>Parent File</h3>
+        @if (Model.ParentFile is null)
+        {
+            <div class="ux-empty">Komentar nije povezan ni s jednom datotekom.</div>
+        }
+        else
+        {
+            <div class="ux-link-cluster">
+                <a class="ux-link-button" asp-controller="LocalMediaFiles" asp-action="Details" asp-route-id="@Model.ParentFile.Id">@Model.ParentFile.FileName</a>
+                <a class="ux-link-button" asp-controller="StorageDevices" asp-action="Details" asp-route-id="@Model.ParentFile.StorageDevice.Id">@Model.ParentFile.StorageDevice.Name</a>
+                <a class="ux-link-button" asp-controller="Tags" asp-action="Index">Tag Heatstrip</a>
+            </div>
+        }
+    </section>
+
+    <div class="ux-link-cluster">
+        <a class="ux-link-button" asp-action="Index">Back to comments</a>
+    </div>
+</section>
